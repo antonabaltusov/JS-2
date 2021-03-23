@@ -54,47 +54,47 @@ class Hamburger {
     }
     getToppings(topping) {   // Получить список добавок }
         getSize() {
-            this.goods = this.api.fetch().map(({ title, price, img }) => new GoodsItem(title, price, img));
+            //this.si = this.api.fetch().map(({ title, price, img }) => new GoodsItem(title, price, img));
         }
         getStuffing() {          // Узнать начинку гамбургера }
             calculatePrice() {       // Узнать цену }
                 calculateCalories() {    // Узнать калорийность }
                 }
 
-                class ProductBuilder {
-                    constructor() {
-                        this.name = 'A Product';
-                        this.price = 9.99;
-                        this.category = 'other';
-                    }
+                // class ProductBuilder {
+                //     constructor() {
+                //         this.name = 'A Product';
+                //         this.price = 9.99;
+                //         this.category = 'other';
+                //     }
 
-                    withName(name) {
-                        this.name = name;
-                        return this;
-                    }
+                //     withName(name) {
+                //         this.name = name;
+                //         return this;
+                //     }
 
-                    withPrice(price) {
-                        this.price = price;
-                        return this;
-                    }
+                //     withPrice(price) {
+                //         this.price = price;
+                //         return this;
+                //     }
 
-                    withCategory(category) {
-                        this.category = category;
-                        return this;
-                    }
+                //     withCategory(category) {
+                //         this.category = category;
+                //         return this;
+                //     }
 
-                    build() {
-                        return {
-                            name: this.name,
-                            price: this.price,
-                            category: this.category,
-                        }
-                    }
-                }
+                //     build() {
+                //         return {
+                //             name: this.name,
+                //             price: this.price,
+                //             category: this.category,
+                //         }
+                //     }
+                // }
 
-                console.log(
-                    new ProductBuilder()
-                        .withName('Harry Potter')
-                        .withCategory('book')
-                        .build()
-                )
+                // console.log(
+                //     new ProductBuilder()
+                //         .withName('Harry Potter')
+                //         .withCategory('book')
+                //         .build()
+                // )

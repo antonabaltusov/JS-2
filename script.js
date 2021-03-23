@@ -1,17 +1,60 @@
-// 1. Добавьте пустые классы для корзины товаров и элемента корзины товаров.
-// Продумайте, какие методы понадобятся для работы с этими сущностями.
-class ApiMock {
-    constructor() {
 
+class Api {
+    constructor() {
+        this.url = '/goods.json';
     }
 
-    fetch() {
-        return [
-            { title: 'Shirt', price: 150, img: "img / 1.png" },
-            { title: 'Socks', price: 50, img: "img / 1.png" },
-            { title: 'Jacket', price: 350, img: "img / 1.png" },
-            { title: 'Shoes', price: 250, img: "img / 1.png" },
-        ];
+    fetch(error, success) {
+        let xhr;
+
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    success(JSON.parse(xhr.responseText));
+                } else if (xhr.status > 400) {
+                    error('все пропало');
+                }
+            }
+        }
+
+        xhr.open('GET', this.url, true);
+        xhr.send();
+    }
+
+
+
+    fetchPromise() {
+        return new Promise((resolve, reject) => {
+            this.fetch(reject, resolve)
+        })
+    }
+}
+
+class Header {
+    constructor() {
+        this.$container = document.querySelector('header');
+        this.$button = this.$container.querySelector('.cart-button');
+        this.$search = this.$container.querySelector('#search');
+        this.$goodsList = document.querySelector('.goods-list');
+        this.$cart = document.querySelector('.cart');
+        this.$cart.style.display = "block";
+    }
+
+    setSearchHandler(callback) {
+        this.$search.addEventListener('input', callback);
+    }
+
+    setButtonHandler(callback) {
+        this.$button.addEventListener('click', callback);
+    }
+    setAddProduct(callback) {
+        this.$goodsList.addEventListener('click', callback);
     }
 }
 
@@ -20,32 +63,117 @@ class GoodsItem {
         this.title = title;
         this.price = price;
         this.img = img;
-    }
 
-    getHtml() {
+
+    }
+    getHtml(index) {
+
         return `<div class="goods-item">
       <img class="photo" src="${this.img}" alt="фото товара">
       <h3>${this.title}</h3>
       <p>${this.price}</p>
-      <button class="add-button" type="button">Добавить</button></div>`;
+      <button class='add-button' onclick="goodsList.addToCatd(${index})" type='button'>Добавить</button>
+      </div>`;
+    }
+
+}
+class GoodsItemCart {
+    constructor(title, price, img) {
+        this.title = title;
+        this.price = price;
+    }
+    getHtml(index) {
+
+        return `<div class="goods-item">
+      <img class="photo" src="${this.img}" alt="фото товара">
+      <h3>${this.title}</h3>
+      <p>${this.price}</p>
+      <button class='add-button' onclick="goodsList.cart.removeGood(${index})" type='button'>Удалить</button>
+      </div>`;
+    }
+
+}
+class Cart {
+    constructor() {
+        this.goods = [];
+        this.header = new Header;
+        this.header.setButtonHandler(this.showCart());
+    }
+    add(good) {
+        this.goods.push(new GoodsItemCart(good.title, good.price));
+        console.log(this.goods);
+        this.render();
+    }
+    removeGood(index) {
+        this.goods.splice(index, 1);
+        this.render();
+        console.log(index)
+    }
+    showCart() {
+        if (this.header.$cart.style.display === "block") {
+            this.header.$cart.style.display = "none"
+        } else { this.header.$cart.style.display = "block" }
+    }
+
+    render() {
+        this.header.$cart.textContent = '';
+        this.goods.forEach((good, index) => {
+            this.header.$cart.insertAdjacentHTML('beforeend', good.getHtml(index));
+        })
     }
 }
 
 class GoodsList {
     constructor() {
-        this.api = new ApiMock();
-        this.$goodsList = document.querySelector('.goods-list');
+        this.api = new Api();
+        this.header = new Header();
+        this.cart = new Cart();
         this.goods = [];
+        this.filteredGoods = [];
+
+        //this.api.fetch(this.onFetchError.bind(this), this.onFetchSuccess.bind(this));
+
+        this.header.setSearchHandler((evet) => {
+            this.search(evet.target.value);
+        })
+
+        const fetch = this.api.fetchPromise();
+
+        fetch.then((data) => { this.onFetchSuccess(data) })
+            .catch((err) => { this.onFetchError(err) });
+
+        console.log(fetch);
+
+
     }
 
-    fetchGoods() {
-        this.goods = this.api.fetch().map(({ title, price, img }) => new GoodsItem(title, price, img));
+    addToCatd(index) {
+        this.cart.add(this.filteredGoods[index]);
+    }
+
+    search(str) {
+        if (str === '') {
+            this.filteredGoods = this.goods;
+        }
+        const regexp = new RegExp(str, 'gi');
+        this.filteredGoods = this.goods.filter((good) => regexp.test(good.title));
+        this.render();
+    }
+
+    onFetchSuccess(data) {
+        this.goods = data.map(({ title, price, img }) => new GoodsItem(title, price, img));
+        this.filteredGoods = this.goods;
+        this.render();
+    }
+
+    onFetchError(err) {
+        this.header.$goodsList.insertAdjacentHTML('beforeend', `<h3>${err}</h3>`);
     }
 
     render() {
-        this.$goodsList.textContent = '';
-        this.goods.forEach((good) => {
-            this.$goodsList.insertAdjacentHTML('beforeend', good.getHtml());
+        this.header.$goodsList.textContent = '';
+        this.filteredGoods.forEach((good, index) => {
+            this.header.$goodsList.insertAdjacentHTML('beforeend', good.getHtml(index));
         })
     }
     getSumm() {
@@ -53,30 +181,15 @@ class GoodsList {
         this.goods.forEach(good => {
             summ += good.price;
         });
-        //console.log(summ)
         return summ
-
     }
 }
-class GoodsOfCard extends GoodsItem {
-    constructor(title, price, img) {
-        super(title, price, img);
-        this.count = 0;
-    }
-    //метод длобваления в корзину(когда человек кликает на кнопку Добавить)
-    //методы изменения количества товара в корзине(на +1 или -1 или вообще что бы человек мог вводить количество)
-    //метод удаления товара из корзины
-    //метод вывода общей стомости 
 
-}
-class GoodsListOfCard {
-    //метод вывода на экран когда человек кликнет по кнопке
-    //метод подсчета суммы заказа
-}
+function openCart() {
+    console.log('cart');
+};
 
 
 const goodsList = new GoodsList();
+//
 
-goodsList.fetchGoods();
-goodsList.render();
-console.log(goodsList.getSumm())
