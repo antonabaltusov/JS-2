@@ -97,7 +97,7 @@ class Cart {
     constructor() {
         this.goods = [];
         this.header = new Header;
-        this.header.setButtonHandler(this.showCart());
+        // this.header.setButtonHandler(console.log("hello"));
     }
     add(good) {
         this.goods.push(new GoodsItemCart(good.title, good.price));
