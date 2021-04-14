@@ -1,0 +1,37 @@
+[
+    {
+        "move": "add",
+        "name": "Coat",
+        "time": 1055.9849999845028
+    },
+    {
+        "move": "add",
+        "name": "Coat",
+        "time": 4198.800000012852
+    },
+    {
+        "move": "add",
+        "name": "Socks",
+        "time": 6157.820000022184
+    },
+    {
+        "move": "add",
+        "name": "Shoes",
+        "time": 7801.630000001751
+    },
+    {
+        "move": "remove",
+        "name": "Shoes",
+        "time": 7194.329999998445
+    },
+    {
+        "move": "add",
+        "name": "Coat",
+        "time": 1730.8600000105798
+    },
+    {
+        "move": "add",
+        "name": "Socks",
+        "time": 4046.200000011595
+    }
+]
