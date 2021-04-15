@@ -1,0 +1,15 @@
+{
+  "name": "anton",
+  "version": "1.0.0",
+  "description": "",
+  "main": "skript.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine": "^3.7.0"
+  }
+}
