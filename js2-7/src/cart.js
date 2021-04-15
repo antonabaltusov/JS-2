@@ -4,7 +4,7 @@
 Vue.component('cart', { // создание компонента корзины
     template: `<div>
       <button class="cart-button" @click="openCartHandler" type="button">Корзина</button>
-      <div v-if="isVisibleCart" v-on:click="removeHandler">
+      <div v-if="isVisibleCart" v-on:click="removeHandler" class="cart-list">
         <slot></slot>
       </div>
     </div>`,

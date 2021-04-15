@@ -3,18 +3,21 @@
 
 <head>
   <title>eShop</title>
+  <link rel="stylesheet" href="./main.css">
 </head>
 
 <body>
   <div id="app">
     <header>
       <search v-on:search="searchHandler"></search>
-      <cart v-on:remove="removeFromCartHandler">
-        <goods-item v-for="good in cart" v-bind:title="good.title" v-bind:price="good.price" v-bind:id="good.id" />
+      <cart>
+        <cart-item v-for="good in cart" v-bind:title="good.title" v-bind:price="good.price" v-bind:id="good.id">
+          <button v-on:click="removeFromCartHandler" class="button_good remove" type="button">remove</button>
+        </cart-item>
       </cart>
     </header>
     <main>
-      <div class="goods-list" v-on:click="addToCartHandler">
+      <div class="goods-list">
         <div v-if="!isLoaded">
           <h4>Loading...</h4>
         </div>
@@ -22,7 +25,9 @@
           <h4>Товаров нет</h4>
         </div>
         <goods-item v-for="good in filtredGoods" v-bind:title="good.title" v-bind:price="good.price"
-          v-bind:id="good.id"></goods-item>
+          v-bind:id="good.id">
+          <button v-on:click="addToCartHandler" class="button_good add" type="button">add</button>
+        </goods-item>
       </div>
     </main>
   </div>

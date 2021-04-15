@@ -43,7 +43,7 @@ const vue = new Vue({
     },
 
     removeFromCartHandler(e) {
-      const id = e.target.closest('.goods-item').dataset.id;
+      const id = e.target.closest('.cart-item').dataset.id;
       const goodIndex = this.cart.findIndex((item) => item.id == id);
       const good = this.goods.find((item) => item.id == id);
 
