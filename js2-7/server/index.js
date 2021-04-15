@@ -91,13 +91,16 @@ app.post('/cart', bodyParser.json(), (req, res) => {
     })
 });
 
-app.post('/cart_splice', bodyParser.json(), (req, res) => {
+app.delete('/cart', bodyParser.json(), (req, res) => {
     fs.readFile('./cart.json', 'utf-8', (err, data) => {
         if (!err) {
-            const goods = JSON.parse(data);
-            goods.splice(req.body.index, 1);
+            const cart = JSON.parse(data);
+            const id = req.body.id;
+            const goodIndex = cart.findIndex((item) => item.id == id);
+            cart.splice(goodIndex, 1);
 
-            fs.writeFile('./cart.json', JSON.stringify(goods), (err) => {
+
+            fs.writeFile('./cart.json', JSON.stringify(cart), (err) => {
                 if (!err) {
                     res.end();
                 } else {

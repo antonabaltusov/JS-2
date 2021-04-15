@@ -88,12 +88,12 @@ const vue = new Vue({
       const goodIndex = this.cart.findIndex((item) => item.id == id);
       const good = this.goods.find((item) => item.id == id);
 
-      fetch('/cart_splice', {
-        method: 'POST',
+      fetch('/cart', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ index: goodIndex })
+        body: JSON.stringify({ id })
       });
 
       this.addStats({
